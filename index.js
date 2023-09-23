@@ -20,6 +20,9 @@ canvas.lineTo(103,109);
 canvas.stroke();
 //canvas.fill();
 
+let mouseIsDown = false;
+let timer;
+
 function addButton(){
     let wrapper = document.querySelector("#wrapper");
     let initialButton = document.querySelector("#initialButton");
@@ -54,16 +57,50 @@ let getMousePosition = (canvas,event) =>{
     return {x:abs,y:ord};
 }
 
-let addCanvasPoint = (canvasDiv,event) =>{
-    let {x:x,y:y} = getMousePosition(canvasDiv,event);
-    console.log("x:",x)
-    console.log("y:",y)
+let addCanvasPoint = (x,y) =>{
+    //let {x:x,y:y} = getMousePosition(canvasDiv,event);
     canvas.beginPath();
     canvas.moveTo(x,y);
     canvas.lineTo(x+5,y+5);
     canvas.stroke();
 }
 
+
+function addPoint(ev){
+    timer = setTimeout(() => {
+        let {x:x,y:y} = getMousePosition(canvasDiv,ev);
+        if(mouseIsDown){
+             addCanvasPoint(x,y);
+        }
+        addPoint(ev);
+    },10);
+}
+
 canvasDiv.addEventListener("mousedown", event => {
-    addCanvasPoint(canvasDiv,event);
+    mouseIsDown = true;
 })
+
+
+canvasDiv.addEventListener("mousemove", event => {
+    if(mouseIsDown){
+        addPoint(event);
+    }
+})
+
+canvasDiv.addEventListener("mouseup", event => {
+    clearTimeout(timer);
+    mouseIsDown = false;
+})
+
+/* 
+function handleClickHold(timeout, callback){
+    let startTime;
+    const mouseDown = () => (startTime = Date.now());
+    const mouseUp = event => {
+        let hasTimeoutElapsed = Date.now() - startTime > timeout;
+        let isCallbackOK = callback(Date.now - startTime);
+        return hasTimeoutElapsed && isCallbackOK;
+    };
+}
+
+const callBack = (timeElapsed) => {console.log("")} */
