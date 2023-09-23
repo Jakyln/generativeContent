@@ -23,11 +23,13 @@ canvas.stroke();
 let mouseIsDown = false;
 let timer;
 
+function clearCanvas(){
+    canvasDiv.width = canvasDiv.width;
+}
+
 function addButton(){
     let wrapper = document.querySelector("#wrapper");
     let initialButton = document.querySelector("#initialButton");
-    //let buttonToAdd = document.createElement("button");
-    //buttonToAdd.append("HELLO")
     let buttonToAdd = initialButton.cloneNode(true);
     wrapper.append(buttonToAdd);
 } 
@@ -41,12 +43,6 @@ function addInfiniteButtons(){
     },1000);
 }
 
-/* let addCanvasPoint = (event) => {
-    console.log('event,',event)
-} */
-
-
-
 
 let getMousePosition = (canvas,event) =>{
     let rect = canvas.getBoundingClientRect();
@@ -58,7 +54,6 @@ let getMousePosition = (canvas,event) =>{
 }
 
 let addCanvasPoint = (x,y) =>{
-    //let {x:x,y:y} = getMousePosition(canvasDiv,event);
     canvas.beginPath();
     canvas.moveTo(x,y);
     canvas.lineTo(x+5,y+5);
@@ -72,11 +67,12 @@ function addPoint(ev){
         if(mouseIsDown){
              addCanvasPoint(x,y);
         }
-        addPoint(ev);
-    },10);
+    },100);
 }
 
-canvasDiv.addEventListener("mousedown", event => {
+//---- Ajout des évenements
+
+canvasDiv.addEventListener("mousedown", () => {
     mouseIsDown = true;
 })
 
@@ -87,7 +83,7 @@ canvasDiv.addEventListener("mousemove", event => {
     }
 })
 
-canvasDiv.addEventListener("mouseup", event => {
+canvasDiv.addEventListener("mouseup", () => {
     clearTimeout(timer);
     mouseIsDown = false;
 })
