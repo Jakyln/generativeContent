@@ -162,12 +162,15 @@ let colorlist =
 let canvasDiv = document.querySelector("#myCanvas");
 canvasDiv.style = "border:solid"
 let canvas = canvasDiv.getContext("2d");
+let rect = canvasDiv.getBoundingClientRect();
+
 canvas.lineWidth = 5;
 
 let mouseIsDown = false;
 let globalX = 0;
 let globalY = 0;
 let timer;
+let isWithinBounds = false;
 
 let colorsDiv = document.querySelector("#colors");
 for (let index = 0; index < colorlist.length; index++) {
@@ -218,7 +221,7 @@ let addCanvasPoint = (x, y, x2, y2) =>{
     // canvas.lineJoin = "round";
     canvas.moveTo(x,y);
     canvas.lineTo(x2,y2);
-    canvas.closePath();
+    // canvas.closePath();
     canvas.stroke();
 }
 
@@ -241,9 +244,14 @@ canvasDiv.addEventListener("mousedown", (event) => {
 
 canvasDiv.addEventListener("mousemove", event => {
     if(mouseIsDown){
-        addPoint(event);
-        globalX = event.offsetX;
-        globalY = event.offsetY;
+        isWithinBounds = this.withinBoundsCheck(globalX, globalY);
+        if(isWithinBounds){
+            addPoint(event);
+            console.log("globalX:",globalX)
+            // console.log("globalY:",globalY)
+            globalX = event.offsetX;
+            globalY = event.offsetY;
+        }
     }
 })
 
@@ -253,6 +261,26 @@ canvasDiv.addEventListener("mouseup", (event) => {
     clearTimeout(timer);
     mouseIsDown = false;
 })
+
+function withinBoundsCheck(x, y){
+    let withinBounds = false;
+    let borderLimit = 200;
+    if(
+        x - borderLimit < 0 &&
+        y - borderLimit < 0
+    ){
+        withinBounds = true;
+    }
+    console.log("x:",x)
+    return withinBounds;
+}
+
+/* let getMousePosition = (canvas,event) =>{
+    let rect = canvas.getBoundingClientRect();
+    let abs = event.clientX - rect.left;
+    let ord = event.clientY - rect.top;
+    return {x:abs,y:ord};
+} */
 
 /* 
 function handleClickHold(timeout, callback){
