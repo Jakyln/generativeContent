@@ -172,27 +172,23 @@ let globalY = 0;
 let isWithinBounds = false;
 
 let colorsDiv = document.querySelector("#colors");
+let selectColors = document.querySelector("#selectColors");
+
+
 for (let index = 0; index < colorlist.length; index++) {
     const color = colorlist[index];
-    let colorDiv = document.createElement("div");
-    let colorBox = document.createElement("div");
     let colorText = document.createTextNode(color);
-    colorBox.style = `height:20px;width:20px;background-color:${color}`
-    colorBox.id = color;
-    colorBox.addEventListener("click", () => {
-        pickColor(color);
-        /* let style = window.getComputedStyle(colorBox);
-        console.log("style:",style) */
-    });
-    colorDiv.append(colorBox);
-    colorDiv.append(colorText);
-    colorsDiv.append(colorDiv);
+    let selectColorsOption = document.createElement("option");
+    console.log("selectColorsOption:",selectColorsOption)
+    selectColorsOption.append(colorText);
+    selectColorsOption.style = `color:${color}; font-weight:bold;`;
+    selectColorsOption.value = color;
+    selectColors.append(selectColorsOption);
+
+    
     
 }
 
-function pickColor(colorStr){
-    canvas.strokeStyle = colorStr;
-}
 function clearCanvas(){
     //reinitalise canvas
     canvasDiv.width = canvasDiv.width;
@@ -217,6 +213,7 @@ function addInfiniteButtons(){
 
 let addCanvasPoint = (x, y, x2, y2) =>{
     canvas.beginPath();
+    canvas.strokeStyle = selectColors.value;
     canvas.lineJoin = "round";
     canvas.moveTo(x,y);
     canvas.lineTo(x2,y2);
