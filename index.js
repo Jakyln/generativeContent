@@ -164,7 +164,6 @@ canvasDiv.style = "border:solid"
 let canvas = canvasDiv.getContext("2d");
 let rect = canvasDiv.getBoundingClientRect();
 
-canvas.lineWidth = 5;
 
 let mouseIsDown = false;
 let globalX = 0;
@@ -173,7 +172,8 @@ let isWithinBounds = false;
 
 let colorsDiv = document.querySelector("#colors");
 let selectColors = document.querySelector("#selectColors");
-
+let inputLineWidth = document.querySelector("#inputLineWidth");
+inputLineWidth.value = 5;
 
 for (let index = 0; index < colorlist.length; index++) {
     const color = colorlist[index];
@@ -192,7 +192,9 @@ for (let index = 0; index < colorlist.length; index++) {
 function clearCanvas(){
     //reinitalise canvas
     canvasDiv.width = canvasDiv.width;
-    canvas.lineWidth = 5;
+    inputLineWidth.value = 5;
+    selectColors.value = "";
+
 }
 
 function addButton(){
@@ -214,6 +216,7 @@ function addInfiniteButtons(){
 let addCanvasPoint = (x, y, x2, y2) =>{
     canvas.beginPath();
     canvas.strokeStyle = selectColors.value;
+    canvas.lineWidth = inputLineWidth.value;
     canvas.lineJoin = "round";
     canvas.moveTo(x,y);
     canvas.lineTo(x2,y2);
