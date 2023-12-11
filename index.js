@@ -169,7 +169,6 @@ canvas.lineWidth = 5;
 let mouseIsDown = false;
 let globalX = 0;
 let globalY = 0;
-let timer;
 let isWithinBounds = false;
 
 let colorsDiv = document.querySelector("#colors");
@@ -218,10 +217,10 @@ function addInfiniteButtons(){
 
 let addCanvasPoint = (x, y, x2, y2) =>{
     canvas.beginPath();
-    // canvas.lineJoin = "round";
+    canvas.lineJoin = "round";
     canvas.moveTo(x,y);
     canvas.lineTo(x2,y2);
-    // canvas.closePath();
+    canvas.closePath();
     canvas.stroke();
 }
 
@@ -241,25 +240,29 @@ canvasDiv.addEventListener("mousedown", (event) => {
     mouseIsDown = true;
 })
 
-
+//Lorsqu'on sort du carré avec le click maintenu, et qu'on revient dedans, je veux continuer le trait
+/*
+click maintenu -> sort div -> rerentre dans div -> trait = bien
+*/
 canvasDiv.addEventListener("mousemove", event => {
     if(mouseIsDown){
         isWithinBounds = this.withinBoundsCheck(globalX, globalY);
         if(isWithinBounds){
             addPoint(event);
-            console.log("globalX:",globalX)
             // console.log("globalY:",globalY)
             globalX = event.offsetX;
             globalY = event.offsetY;
         }
     }
 })
-
+//
 canvasDiv.addEventListener("mouseup", (event) => {
-    globalX = 0;
-    globalY = 0;
-    clearTimeout(timer);
-    mouseIsDown = false;
+    if(mouseIsDown){
+        //addPoint(event);
+        globalX = 0;
+        globalY = 0;
+        mouseIsDown = false;
+    }
 })
 
 function withinBoundsCheck(x, y){
@@ -271,7 +274,6 @@ function withinBoundsCheck(x, y){
     ){
         withinBounds = true;
     }
-    console.log("x:",x)
     return withinBounds;
 }
 
