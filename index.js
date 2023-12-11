@@ -165,6 +165,8 @@ let canvas = canvasDiv.getContext("2d");
 canvas.lineWidth = 5;
 
 let mouseIsDown = false;
+let globalX = 0;
+let globalY = 0;
 let timer;
 
 let colorsDiv = document.querySelector("#colors");
@@ -177,8 +179,8 @@ for (let index = 0; index < colorlist.length; index++) {
     colorBox.id = color;
     colorBox.addEventListener("click", () => {
         pickColor(color);
-        let style = window.getComputedStyle(colorBox);
-        console.log("style:",style)
+        /* let style = window.getComputedStyle(colorBox);
+        console.log("style:",style) */
     });
     colorDiv.append(colorBox);
     colorDiv.append(colorText);
@@ -186,8 +188,8 @@ for (let index = 0; index < colorlist.length; index++) {
     
 }
 
-function pickColor(colorHex){
-    canvas.strokeStyle = colorHex;
+function pickColor(colorStr){
+    canvas.strokeStyle = colorStr;
 }
 function clearCanvas(){
     //reinitalise canvas
@@ -211,34 +213,28 @@ function addInfiniteButtons(){
     },1000);
 }
 
-
-let getMousePosition = (canvas,event) =>{
-    let rect = canvas.getBoundingClientRect();
-    let abs = event.clientX - rect.left;
-    let ord = event.clientY - rect.top;
-    return {x:abs,y:ord};
-}
-
-let addCanvasPoint = (x,y) =>{
+let addCanvasPoint = (x, y, x2, y2) =>{
     canvas.beginPath();
+    // canvas.lineJoin = "round";
     canvas.moveTo(x,y);
-    canvas.lineTo(x+5,y+5);
+    canvas.lineTo(x2,y2);
+    canvas.closePath();
     canvas.stroke();
 }
 
 
 function addPoint(ev){
-    timer = setTimeout(() => {
-        let {x:x,y:y} = getMousePosition(canvasDiv,ev);
-        if(mouseIsDown){
-             addCanvasPoint(x,y);
-        }
-    },100);
+    //let {x:x,y:y} = getMousePosition(canvasDiv,ev);
+    if(mouseIsDown){
+        addCanvasPoint(globalX, globalY, ev.offsetX, ev.offsetY);
+    }
 }
 
 //---- Ajout des évenements
 
-canvasDiv.addEventListener("mousedown", () => {
+canvasDiv.addEventListener("mousedown", (event) => {
+    globalX = event.offsetX;
+    globalY = event.offsetY;
     mouseIsDown = true;
 })
 
@@ -246,10 +242,14 @@ canvasDiv.addEventListener("mousedown", () => {
 canvasDiv.addEventListener("mousemove", event => {
     if(mouseIsDown){
         addPoint(event);
+        globalX = event.offsetX;
+        globalY = event.offsetY;
     }
 })
 
-canvasDiv.addEventListener("mouseup", () => {
+canvasDiv.addEventListener("mouseup", (event) => {
+    globalX = 0;
+    globalY = 0;
     clearTimeout(timer);
     mouseIsDown = false;
 })
